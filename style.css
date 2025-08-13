@@ -4,7 +4,9 @@ body {
   background: #f5f7fa;
   color: #333;
 }
-
+main{
+  padding-bottom: 60px;
+}
 h1 {
   text-align: center;
   color: #2c3e50;
@@ -97,4 +99,15 @@ button:hover {
 
 #saveSettings:hover {
   background-color: #2980b9;
+}
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  background: #f8f9fa;
+  padding: 10px;
+  font-size: 14px;
+  color: #555;
+  border-top: 1px solid #ccc;
 }
