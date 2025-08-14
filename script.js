@@ -139,11 +139,26 @@ window.onload = () => {
 };
 
 // Add search control using Leaflet Control Geocoder
-L.Control.geocoder({ defaultMarkGeocode: false })
-  .on("markgeocode", function (e) {
+var geocoder = L.Control.geocoder({
+    geocoder: new L.Control.Geocoder.Photon(), // Use Photon instead of Nominatim
+    placeholder: 'Search for places...',
+    defaultMarkGeocode: false
+})
+.on("markgeocode", function(e) {
     setDestination(e.geocode.center);
-  })
-  .addTo(map);
+})
+.addTo(map);
+
+document.addEventListener('mouseover', function (e) {
+    if (e.target.closest('.leaflet-control-geocoder-alternatives')) {
+        map.dragging.disable();
+        map.scrollWheelZoom.disable();
+    } else {
+        map.dragging.enable();
+        map.scrollWheelZoom.enable();
+    }
+});
+
 
 // Set destination on map click
 map.on("click", function (e) {

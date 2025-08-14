@@ -111,3 +111,14 @@ footer {
   color: #555;
   border-top: 1px solid #ccc;
 }
+
+.leaflet-control-geocoder-alternatives {
+    max-height: 150px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    position: relative;
+    z-index: 9999;
+    pointer-events: auto;
+}
