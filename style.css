@@ -115,10 +115,9 @@ footer {
 .leaflet-control-geocoder-alternatives {
     max-height: 150px;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     background: white;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    position: relative;
     z-index: 9999;
-    pointer-events: auto;
+    position: relative;
+    touch-action: pan-y;
 }

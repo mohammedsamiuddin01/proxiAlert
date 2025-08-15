@@ -147,7 +147,16 @@ var geocoder = L.Control.geocoder({
 .on("markgeocode", function(e) {
     setDestination(e.geocode.center);
 })
-.addTo(map);
+.addTo(map)
+
+// Once control is in DOM, disable event propagation for its dropdown
+map.on('layeradd', function () {
+    const resultsContainer = document.querySelector('.leaflet-control-geocoder-alternatives');
+    if (resultsContainer) {
+        L.DomEvent.disableClickPropagation(resultsContainer);
+        L.DomEvent.disableScrollPropagation(resultsContainer);
+    }
+});
 
 document.addEventListener('mouseover', function (e) {
     if (e.target.closest('.leaflet-control-geocoder-alternatives')) {
@@ -297,3 +306,23 @@ volumeControl.addEventListener("input", () => {
   alarmSound.volume = alarmVolume;
   localStorage.setItem("alarmVolume", alarmVolume);
 });
+const resultsContainerSelector = '.leaflet-control-geocoder-alternatives';
+
+// Stop touch events from reaching the map when interacting with results
+document.addEventListener('touchstart', function (e) {
+    if (e.target.closest(resultsContainerSelector)) {
+        map.dragging.disable();
+        map.touchZoom.disable();
+    }
+}, { passive: false });
+
+document.addEventListener('touchmove', function (e) {
+    if (e.target.closest(resultsContainerSelector)) {
+        e.stopPropagation();  // <-- This is the key
+    }
+}, { passive: false });
+
+document.addEventListener('touchend', function () {
+    map.dragging.enable();
+    map.touchZoom.enable();
+}, { passive: false });
