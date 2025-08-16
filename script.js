@@ -307,22 +307,53 @@ volumeControl.addEventListener("input", () => {
   localStorage.setItem("alarmVolume", alarmVolume);
 });
 const resultsContainerSelector = '.leaflet-control-geocoder-alternatives';
+const observer = new MutationObserver(() => {
+    const resultsContainer = document.querySelector(resultsContainerSelector);
+    if (resultsContainer) {
+        // Disable propagation for touch & scroll
+        L.DomEvent.disableClickPropagation(resultsContainer);
+        L.DomEvent.disableScrollPropagation(resultsContainer);
+
+        // Prevent map from handling touch gestures
+        resultsContainer.addEventListener('touchstart', (e) => {
+            map.dragging.disable();
+            map.touchZoom.disable();
+        }, { passive: false });
+
+        resultsContainer.addEventListener('touchmove', (e) => {
+            e.stopPropagation(); // Key to prevent map from receiving the event
+        }, { passive: false });
+
+        resultsContainer.addEventListener('touchend', () => {
+            map.dragging.enable();
+            map.touchZoom.enable();
+        }, { passive: false });
+    }
+});
+
+// Observe DOM changes for when geocoder results appear
+observer.observe(document.body, { childList: true, subtree: true });
 
 // Stop touch events from reaching the map when interacting with results
 document.addEventListener('touchstart', function (e) {
     if (e.target.closest(resultsContainerSelector)) {
         map.dragging.disable();
         map.touchZoom.disable();
+        map.doubleClickZoom.disable();
+        map.scrollWheelZoom.disable();
     }
 }, { passive: false });
 
 document.addEventListener('touchmove', function (e) {
     if (e.target.closest(resultsContainerSelector)) {
-        e.stopPropagation();  // <-- This is the key
+        e.stopPropagation();   // Stop event from bubbling to map
+        e.preventDefault();    // Prevent map from interpreting scroll
     }
 }, { passive: false });
 
 document.addEventListener('touchend', function () {
     map.dragging.enable();
     map.touchZoom.enable();
+    map.doubleClickZoom.enable();
+    map.scrollWheelZoom.enable();
 }, { passive: false });
